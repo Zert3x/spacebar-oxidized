@@ -86,9 +86,9 @@ impl Filter for LogFilter {
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
-struct Args {
+pub struct Args {
     #[arg(short, long, default_value = "false")]
-    migrate: bool,
+    pub migrate: bool,
 }
 
 pub struct Server {
@@ -101,8 +101,7 @@ pub struct Server {
 }
 
 impl Server {
-    pub async fn new() -> Result<Self, crate::errors::Error> {
-        let args = Args::parse();
+    pub async fn new(args: Args) -> Result<Self, crate::errors::Error> {
         dotenv::dotenv().ok();
 
         let stdout = ConsoleAppender::builder()
