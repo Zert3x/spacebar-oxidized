@@ -14,7 +14,7 @@ pub trait Queryer<'c, DB: Database>: Executor<'c, Database = DB> {}
 
 impl<'c> Queryer<'c, sqlx::Postgres> for &PgPool {}
 
-static DEFAULT_CONNECTION_HOST: &str = "localhost:5432";
+static DEFAULT_CONNECTION_HOST: &str = "localhost";
 static DEFAULT_CONNECTION_USERNAME: &str = "symfonia";
 static DEFAULT_CONNECTION_PASSWORD: &str = "symfonia";
 static DEFAULT_CONNECTION_NAME: &str = "symfonia";
