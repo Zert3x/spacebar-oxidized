@@ -11,7 +11,7 @@ create table if not exists users (
     desktop             boolean            not null default false,
     mobile              boolean            not null default false,
     premium             boolean            not null,
-    premium_type        numeric(5, 0)      not null constraint chk_smallint_unsigned check (premium_type >= 0 and premium_type <= 65535),
+    premium_type        smallint           not null constraint chk_premium_type check (premium_type >= 0 and premium_type <= 3),
     bot                 boolean            not null default false,
     bio                 varchar(255)       not null default '',
     system              boolean            not null default false,
