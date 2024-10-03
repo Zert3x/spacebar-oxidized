@@ -15,14 +15,6 @@ RUN SQLX_OFFLINE=true cargo build --release
 
 FROM debian:latest AS runtime
 
-# API
-EXPOSE 3001
-# CDN
-EXPOSE 3002
-# Gateway
-EXPOSE 3003
-EXPOSE 3003/udp
-
 RUN apt update && apt install -y libssl-dev pkg-config
 
 RUN adduser \
@@ -38,4 +30,11 @@ COPY --from=builder --chown=symfonia:symfonia /app/target/release/symfonia /app/
 
 USER symfonia:symfonia
 WORKDIR /app/
+# API
+EXPOSE 3001
+# CDN
+EXPOSE 3002
+# Gateway
+EXPOSE 3003
+EXPOSE 3003/udp
 ENTRYPOINT ["/app/symfonia"]
