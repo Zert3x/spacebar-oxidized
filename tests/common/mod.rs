@@ -2,8 +2,6 @@ use std::ops::{Deref, DerefMut};
 use std::thread::sleep;
 use std::time::Duration;
 
-use futures::executor::block_on;
-use futures::FutureExt;
 use rand::Rng;
 use sqlx::migrate::MigrateDatabase;
 use sqlx::Postgres;
@@ -63,14 +61,13 @@ impl Server {
 
     pub async fn stop(mut self) {
         dbg!("Stopping server");
-        self.task.unwrap().abort();
-        self.task = None;
         Postgres::force_drop_database(&format!(
             "postgres://symfonia:symfonia@localhost:5432/symfonia-test-{}",
             self.suffix
         ))
         .await
-        .unwrap()
+        .unwrap();
+        self.inner.stop();
     }
 }
 

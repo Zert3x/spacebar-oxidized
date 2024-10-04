@@ -92,12 +92,26 @@ pub struct Args {
     pub migrate: bool,
 }
 
-#[derive(Clone)]
 pub struct Server {
     pub config: database::entities::Config,
     pub db: sqlx::Pool<sqlx::Postgres>,
     pub connected_users: ConnectedUsers,
     handle: log4rs::Handle,
+    kill_send: tokio::sync::broadcast::Sender<()>,
+    pub kill_receive: tokio::sync::broadcast::Receiver<()>,
+}
+
+impl Clone for Server {
+    fn clone(&self) -> Self {
+        Self {
+            config: self.config.clone(),
+            db: self.db.clone(),
+            connected_users: self.connected_users.clone(),
+            handle: self.handle.clone(),
+            kill_send: self.kill_send.clone(),
+            kill_receive: self.kill_receive.resubscribe(),
+        }
+    }
 }
 
 impl Server {
@@ -248,12 +262,15 @@ impl Server {
             .await
             .expect("Failed to init role user map");
         log::debug!(target: "symfonia", "Role->User map initialized with {} entries", connected_users.role_user_map.lock().await.len());
+        let kill_pair = tokio::sync::broadcast::channel(1);
 
         Ok(Self {
             config: symfonia_config,
             db,
             connected_users,
             handle,
+            kill_send: kill_pair.0,
+            kill_receive: kill_pair.1,
         })
     }
 
@@ -279,5 +296,11 @@ impl Server {
             Ok(_) => Ok(()),
             Err(e) => Err(e),
         }
+    }
+
+    pub fn stop(&mut self) {
+        self.kill_send
+            .send(())
+            .expect("Error when trying to stop the server");
     }
 }
