@@ -53,6 +53,7 @@ pub use cdn::*;
 pub use database::*;
 pub use errors::*;
 pub use gateway::*;
+use tokio::task::JoinHandle;
 pub use util::*;
 
 pub type SharedEventPublisher = Arc<RwLock<Publisher<Event>>>;
@@ -92,8 +93,6 @@ pub struct Args {
 }
 
 pub struct Server {
-    pub api: tokio::task::JoinHandle<()>,
-    pub gateway: tokio::task::JoinHandle<()>,
     pub config: database::entities::Config,
     pub db: sqlx::Pool<sqlx::Postgres>,
     pub connected_users: ConnectedUsers,
@@ -247,34 +246,42 @@ impl Server {
             .init_role_user_map(&db)
             .await
             .expect("Failed to init role user map");
-        log::trace!(target: "symfonia", "Role->User map initialized with {} entries", connected_users.role_user_map.lock().await.len());
-
-        let _db_api = db.clone();
-        let _connected_users_api = connected_users.clone();
-        let _symfonia_config_api = symfonia_config.clone();
-        let _db_gateway = db.clone();
-        let _connected_users_gateway = connected_users.clone();
-        let _symfonia_config_gateway = symfonia_config.clone();
+        log::debug!(target: "symfonia", "Role->User map initialized with {} entries", connected_users.role_user_map.lock().await.len());
 
         Ok(Self {
-            api: tokio::spawn(async move {
-                api::start_api(_db_api, _connected_users_api, _symfonia_config_api)
-                    .await
-                    .unwrap()
-            }),
-            gateway: tokio::spawn(async move {
-                gateway::start_gateway(
-                    _db_gateway,
-                    _connected_users_gateway,
-                    _symfonia_config_gateway,
-                )
-                .await
-                .unwrap()
-            }),
             config: symfonia_config,
             db,
             connected_users,
             handle,
         })
+    }
+
+    pub async fn start(&self) -> Result<(), tokio::task::JoinError> {
+        let _db_api = self.db.clone();
+        let _connected_users_api = self.connected_users.clone();
+        let _symfonia_config_api = self.config.clone();
+        let _db_gateway = self.db.clone();
+        let _connected_users_gateway = self.connected_users.clone();
+        let _symfonia_config_gateway = self.config.clone();
+
+        let gateway_handle = tokio::spawn(async move {
+            gateway::start_gateway(
+                _db_gateway,
+                _connected_users_gateway,
+                _symfonia_config_gateway,
+            )
+            .await
+            .unwrap()
+        });
+
+        let api_handle = tokio::spawn(async move {
+            api::start_api(_db_api, _connected_users_api, _symfonia_config_api)
+                .await
+                .unwrap()
+        });
+        match tokio::try_join!(gateway_handle, api_handle) {
+            Ok(_) => Ok(()),
+            Err(e) => Err(e),
+        }
     }
 }
