@@ -45,7 +45,7 @@ impl Server {
     }
 }
 
-#[tokio::test]
+#[tokio::test(flavor = "multi_thread")]
 async fn test_server_struct() {
     let mut rng = rand::thread_rng();
     let suffix = rng.gen_range(1000..=100000);
