@@ -92,6 +92,7 @@ pub async fn start_api(
     log::info!(target: "symfonia::api", "Starting HTTP Server");
 
     tokio::task::spawn(async move {
+        log::debug!("HTTP Server task running");
         Server::new(TcpListener::bind(bind_clone))
             .run(v9_api)
             .await
