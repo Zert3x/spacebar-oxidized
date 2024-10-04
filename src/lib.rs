@@ -92,6 +92,7 @@ pub struct Args {
     pub migrate: bool,
 }
 
+#[derive(Clone)]
 pub struct Server {
     pub config: database::entities::Config,
     pub db: sqlx::Pool<sqlx::Postgres>,
