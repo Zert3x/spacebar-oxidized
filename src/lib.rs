@@ -257,25 +257,20 @@ impl Server {
     }
 
     pub async fn start(&self) -> Result<(), tokio::task::JoinError> {
-        let _db_api = self.db.clone();
-        let _connected_users_api = self.connected_users.clone();
-        let _symfonia_config_api = self.config.clone();
-        let _db_gateway = self.db.clone();
-        let _connected_users_gateway = self.connected_users.clone();
-        let _symfonia_config_gateway = self.config.clone();
+        let db_api = self.db.clone();
+        let connected_users_api = self.connected_users.clone();
+        let symfonia_config_api = self.config.clone();
+        let db_gateway = self.db.clone();
+        let connected_users_gateway = self.connected_users.clone();
+        let symfonia_config_gateway = self.config.clone();
 
         let gateway_handle = tokio::spawn(async move {
-            gateway::start_gateway(
-                _db_gateway,
-                _connected_users_gateway,
-                _symfonia_config_gateway,
-            )
-            .await
-            .unwrap()
+            gateway::start_gateway(db_gateway, connected_users_gateway, symfonia_config_gateway)
+                .await
+                .unwrap()
         });
-
         let api_handle = tokio::spawn(async move {
-            api::start_api(_db_api, _connected_users_api, _symfonia_config_api)
+            api::start_api(db_api, connected_users_api, symfonia_config_api)
                 .await
                 .unwrap()
         });
