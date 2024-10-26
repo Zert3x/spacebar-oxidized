@@ -3,15 +3,18 @@ use std::{sync::Arc, time::Duration};
 use chorus::types::{GatewayHeartbeat, GatewaySendPayload, Opcode, Snowflake};
 use futures::StreamExt;
 use log::debug;
-use serde::de::DeserializeOwned;
-use serde::{Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::{from_str, json};
 use tokio::{sync::Mutex, time::sleep};
-use tokio_tungstenite::tungstenite::protocol::frame::coding::CloseCode;
-use tokio_tungstenite::tungstenite::{protocol::CloseFrame, Message};
+use tokio_tungstenite::tungstenite::{
+    protocol::{frame::coding::CloseCode, CloseFrame},
+    Message,
+};
 
-use crate::errors::{Error, GatewayError};
-use crate::gateway::{DispatchEvent, DispatchEventType};
+use crate::{
+    errors::{Error, GatewayError},
+    gateway::{DispatchEvent, DispatchEventType},
+};
 
 use super::{ConnectedUsers, Event, GatewayClient, GatewayPayload};
 

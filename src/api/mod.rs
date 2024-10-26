@@ -6,10 +6,9 @@
 
 static DEFAULT_API_BIND: &str = "0.0.0.0:3001";
 
-use poem::middleware::Cors;
 use poem::{
     listener::TcpListener,
-    middleware::{NormalizePath, TrailingSlash},
+    middleware::{Cors, NormalizePath, TrailingSlash},
     web::Json,
     EndpointExt, IntoResponse, Route, Server,
 };

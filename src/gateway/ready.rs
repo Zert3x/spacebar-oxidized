@@ -4,8 +4,10 @@ use chorus::types::{ClientInfo, GatewayReady, ReadState, Session, Snowflake, Use
 use serde_json::json;
 use sqlx::PgPool;
 
-use crate::database::entities::{Channel, Guild, Note, Relationship};
-use crate::{database::entities::User, errors::Error};
+use crate::{
+    database::entities::{Channel, Guild, Note, Relationship, User},
+    errors::Error,
+};
 
 pub async fn create_ready(user_id: Snowflake, db: &PgPool) -> Result<GatewayReady, Error> {
     let user = match User::get_by_id(db, user_id).await? {

@@ -13,8 +13,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, Row};
 use sqlx_pg_uint::PgU64;
 
-use crate::QUERY_UPPER_LIMIT;
-use crate::{eq_shared_event_publisher, errors::Error, SharedEventPublisherMap};
+use crate::{eq_shared_event_publisher, errors::Error, SharedEventPublisherMap, QUERY_UPPER_LIMIT};
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Role {

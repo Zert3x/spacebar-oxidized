@@ -14,8 +14,10 @@ use poem::{
 };
 use serde_json::json;
 
-use crate::database::entities::{Config, Role, User};
-use crate::gateway::ConnectedUsers;
+use crate::{
+    database::entities::{Config, Role, User},
+    gateway::ConnectedUsers,
+};
 
 #[handler]
 pub async fn register(

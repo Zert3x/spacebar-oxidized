@@ -8,9 +8,9 @@ pub mod event;
 pub use dispatchevent::*;
 pub use event::*;
 
-use std::fmt::Display;
 use std::{
     collections::{HashMap, HashSet},
+    fmt::Display,
     ops::{Deref, DerefMut},
     sync::{Arc, Weak},
 };
@@ -48,8 +48,10 @@ use tokio_tungstenite::{
     WebSocketStream,
 };
 
-use crate::errors::{Error, GatewayError};
-use crate::{WebSocketReceive, WebSocketSend};
+use crate::{
+    errors::{Error, GatewayError},
+    WebSocketReceive, WebSocketSend,
+};
 
 use super::ResumableClientsStore;
 

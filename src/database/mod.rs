@@ -12,7 +12,7 @@ pub mod entities;
 
 pub trait Queryer<'c, DB: Database>: Executor<'c, Database = DB> {}
 
-impl<'c> Queryer<'c, sqlx::Postgres> for &PgPool {}
+impl Queryer<'_, sqlx::Postgres> for &PgPool {}
 
 static DEFAULT_CONNECTION_HOST: &str = "localhost";
 static DEFAULT_CONNECTION_USERNAME: &str = "symfonia";

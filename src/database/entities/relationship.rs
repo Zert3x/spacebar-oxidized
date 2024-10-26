@@ -5,8 +5,7 @@ use chorus::types::{PublicUser, Snowflake};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 
-use crate::errors::Error;
-use crate::QUERY_UPPER_LIMIT;
+use crate::{errors::Error, QUERY_UPPER_LIMIT};
 
 use super::*;
 

@@ -22,12 +22,13 @@ use tokio_tungstenite::{
     },
 };
 
-use crate::gateway::ready::create_ready;
-use crate::gateway::Event;
 use crate::{
     database::entities::Config,
     errors::{Error, GatewayError},
-    gateway::{gateway_task, heartbeat::HeartbeatHandler, GatewayPayload, GatewayUser},
+    gateway::{
+        gateway_task, heartbeat::HeartbeatHandler, ready::create_ready, Event, GatewayPayload,
+        GatewayUser,
+    },
     util::token::check_token,
 };
 
