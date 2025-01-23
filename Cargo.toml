@@ -59,7 +59,7 @@ sentry = { version = "0.34.0", default-features = false, features = [
 clap = { version = "4.5.26", features = ["derive"] }
 chorus = { features = [
     "backend",
-], default-features = false, version = "0.18.0" }
+], default-features = false, git = "https://github.com/polyphony-chat/chorus", branch = "fix/unknown-status-missing" }
 serde_path_to_error = "0.1.16"
 percent-encoding = "2.3.1"
 hex = "0.4.3"
